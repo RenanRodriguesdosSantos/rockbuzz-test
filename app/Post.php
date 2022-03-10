@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
     protected $guarded = [];
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
 
     public function has_tag($tag_id)
     {
@@ -20,5 +23,8 @@ class Post extends Model
     }
     public function tags(){
         return $this->belongsToMany(Tag::class, 'tag_post');
+    }
+    public function autor() {
+        return $this->belongsTo(User::class,'id_autor');
     }
 }

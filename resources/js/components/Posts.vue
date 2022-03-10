@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div v-for="post in posts" class="col-md-3 m-3">
                 <div class="border border-info card h-100">
-                    <img :src="'/storage/capas/' + (post.capa ? post.capa : 'default.jpg')" class="card-img-top" alt="Capa do Post">
+                    <img :src="'/storage/capas/' + (post.capa ? post.capa : 'default.jpg')" class="card-img-top h-100" alt="Capa do Post">
                     <div class="card-body">
                         <h6 class="text-center">{{post.title}}</h6>
                     </div>

@@ -8,10 +8,10 @@
                     <div class="card-header">Posts Edit</div>
 
                     <div class="card-body">
-                        <form action="{{ url('posts/update/' . $post->id) }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ url('post/update/' . $post->id) }}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="form-group has-feedback{{ $errors->has('title') ? ' has-error' : '' }}">
-                                <label for="totle" class="text-muted">Title</label>
+                                <label for="title" class="text-muted">Title</label>
                                 <input id="title" type="text" value="{{ $post->title }}" name="title"
                                        class="form-control">
                                 @if ($errors->has('title'))
@@ -21,7 +21,7 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <label for="title" class="text-muted">Capa</label>
+                                <label for="capa" class="text-muted">Capa</label>
                                 <input id="capa" type="file" name="capa" class="form-control" accept="image/*">
                                 @if ($errors->has('capa'))
                                     <span class="help-block">
@@ -50,6 +50,15 @@
                                 @if ($errors->has('tags'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('tags') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <input id="publicado" type="checkbox" name="publicado" checked="{{ $post->title }}">
+                                <label for="publicado" class="text-muted">Publicado</label>
+                                @if ($errors->has('publicado'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('publicado') }}</strong>
                                     </span>
                                 @endif
                             </div>

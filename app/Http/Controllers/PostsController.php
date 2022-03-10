@@ -50,14 +50,18 @@ class PostsController extends Controller
         $post = \App\Post::create([
             'title' => $request->title,
             'body' => $request->body,
+            'publicado' => $request->publicado ? true: false,
+            'id_autor' => $request->user()->id
         ]);
 
-
-        foreach ($request->tags as $tag_id) {
-            \DB::table('tag_post')->insert([
-                'tag_id' => $tag_id,
-                'post_id' => $post->id
-            ]);
+        if($request->tags){
+            foreach ($request->tags as $tag_id) {
+                \DB::table('tag_post')->insert([
+                    'tag_id' => $tag_id,
+                    'post_id' => $post->id,
+                    
+                ]);
+            }
         }
 
         if ($request->hasFile('capa') && $request->file('capa')->isValid()) {
@@ -103,15 +107,18 @@ class PostsController extends Controller
         $post->update([
             'title' => $request->title,
             'body' => $request->body,
+            'publicado' => $request->publicado ? true: false,
         ]);
 
         \DB::table('tag_post')->where('post_id', '=', $post->id)->delete();
 
-        foreach ($request->tags as $tag_id) {
-            \DB::table('tag_post')->insert([
-                'tag_id' => $tag_id,
-                'post_id' => $post->id
-            ]);
+        if($request->tags){
+            foreach ($request->tags as $tag_id) {
+                \DB::table('tag_post')->insert([
+                    'tag_id' => $tag_id,
+                    'post_id' => $post->id
+                ]);
+            }
         }
 
         if ($request->hasFile('capa') && $request->file('capa')->isValid()) {
@@ -125,20 +132,39 @@ class PostsController extends Controller
         return redirect('posts');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function deletar($id)
+    {
+        $post = \App\Post::onlyTrashed()->find($id);
+
+        $post->forceDelete();
+
+        \DB::table('tag_post')->where('post_id', '=', $post->id)->delete();
+
+        return redirect('posts/lixeira');
+    }
+
+    public function toLixeira($id)
     {
         $post = \App\Post::find($id);
 
         $post->delete();
 
-        \DB::table('tag_post')->where('post_id', '=', $post->id)->delete();
+        return redirect('posts/lixeira');
+    }
+
+    public function restore($id)
+    {
+        $post = \App\Post::onlyTrashed()->find($id);
+
+        $post->restore();
 
         return redirect('posts');
     }
+
+    public function lixeira()
+    {
+        $posts = \App\Post::onlyTrashed()->get();
+        return view('posts.lixeira', ['posts' => $posts]);
+    }
+
 }

@@ -8,7 +8,7 @@
                     <div class="card-header">Posts Create</div>
 
                     <div class="card-body">
-                        <form action="{{ url('posts/store') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ url('post/store') }}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="form-group has-feedback{{ $errors->has('title') ? ' has-error' : '' }}">
                                 <label for="title" class="text-muted">Title</label>
@@ -47,6 +47,15 @@
                                 @if ($errors->has('tags'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('tags') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <input id="publicado" type="checkbox" name="publicado">
+                                <label for="publicado" class="text-muted">Publicado</label>
+                                @if ($errors->has('publicado'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('publicado') }}</strong>
                                     </span>
                                 @endif
                             </div>

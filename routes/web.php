@@ -23,8 +23,11 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/posts', 'PostsController@listar');
-Route::get('/posts/create', 'PostsController@criar');
-Route::post('/posts/store', 'PostsController@salvar');
-Route::get('/posts/edit/{id}', 'PostsController@editar');
-Route::post('/posts/update/{id}', 'PostsController@atualizar');
-Route::get('/posts/destroy/{id}', 'PostsController@deletar');
+Route::get('/post/create', 'PostsController@criar');
+Route::post('/post/store', 'PostsController@salvar');
+Route::get('/post/edit/{id}', 'PostsController@editar');
+Route::post('/post/update/{id}', 'PostsController@atualizar');
+Route::get('/post/move-to-lixeira/{id}', 'PostsController@toLixeira');
+Route::get('/posts/lixeira', 'PostsController@lixeira');
+Route::get('/post/restore/{id}', 'PostsController@restore');
+Route::get('/post/destroy/{id}', 'PostsController@deletar');
