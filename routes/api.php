@@ -17,5 +17,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('posts', 'Api\PostsController@listar');
-Route::get('post/{id}', 'Api\PostsController@find');
+Route::get('posts/{tag?}', 'Api\PostsController@publisheds');
+Route::get('post/{id}', 'Api\PostsController@unique');

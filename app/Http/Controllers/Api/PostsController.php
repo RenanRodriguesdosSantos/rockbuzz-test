@@ -8,19 +8,27 @@ use App\Post;
 
 class PostsController extends Controller
 {
-    public function listar()
+    public function publisheds($tag = null)
     {
-        return Post::where('publicado',true)->paginate(12);
+        return Post::published()
+                ->select(['posts.*'])
+                ->join('tag_post','posts.id','=','tag_post.post_id')
+                ->when($tag, function ($query, $tag) {
+                    return $query->where('tag_post.tag_id', $tag);
+                })
+                ->groupBy('posts.id')
+                ->paginate(12);
     }
 
-    public function find($id)
+    public function unique($id)
     {
-        $post = Post::find($id);
-        $post->visualizacoes++;
+        $post = Post::published()->find($id);
+
+        $post->views++;
         $post->save();
 
-        $post->tags = $post->tags()->select('id','name')->get();
-        $post->autor = $post->autor()->first()? $post->autor()->first()->name : '';
+        $post->tags = $post->tags()->get(['id','name']);
+        $post->author = $post->author()->first(['name']);
 
         return $post;
     }

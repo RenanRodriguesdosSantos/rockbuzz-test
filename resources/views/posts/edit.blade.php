@@ -21,18 +21,18 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <label for="capa" class="text-muted">Capa</label>
-                                <input id="capa" type="file" name="capa" class="form-control" accept="image/*">
-                                @if ($errors->has('capa'))
+                                <label for="cover" class="text-muted">Cover</label>
+                                <inputimage id="cover" name="cover" :defaulturl="'{{$post->cover ? '/storage/covers/' . $post->cover : ''}}'" />
+                                @if ($errors->has('cover'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('capa') }}</strong>
+                                        <strong>{{ $errors->first('cover') }}</strong>
                                     </span>
                                 @endif
                             </div>
                             <div class="form-group has-feedback{{ $errors->has('body') ? ' has-error' : '' }}">
                                 <label for="body" class="text-muted">Body</label>
-                                <textarea id="body" name="body" rows="10"
-                                          class="form-control">{{ $post->body }}</textarea>
+                                <input type="hidden" name="body"/>
+                                <editor name="body" defaultvalue="{{$post->body}}"></editor>
                                 @if ($errors->has('body'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('body') }}</strong>
@@ -41,12 +41,7 @@
                             </div>
                             <div class="form-group has-feedback{{ $errors->has('title') ? ' has-error' : '' }}">
                                 <label for="tags" class="text-muted">Tags</label>
-                                <select id="tags" type="text" name="tags[]" multiple class="form-control">
-                                    @foreach(\App\Tag::all() as $tag)
-                                        <option value="{{ $tag->id }}"
-                                                @if($post->has_tag($tag->id)) selected @endif>{{ $tag->name }}</option>
-                                    @endforeach
-                                </select>
+                                <custumselect :options="{{\App\Tag::all(['id','name'])}}" :defaultvalue="{{$post->tags->pluck('id')}}"></custumselect>
                                 @if ($errors->has('tags'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('tags') }}</strong>
@@ -54,11 +49,11 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <input id="publicado" type="checkbox" name="publicado" checked="{{ $post->title }}">
-                                <label for="publicado" class="text-muted">Publicado</label>
-                                @if ($errors->has('publicado'))
+                                <input id="published" type="checkbox" name="published" checked="{{ $post->title }}">
+                                <label for="published" class="text-muted">Published</label>
+                                @if ($errors->has('published'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('publicado') }}</strong>
+                                        <strong>{{ $errors->first('published') }}</strong>
                                     </span>
                                 @endif
                             </div>

@@ -3,12 +3,12 @@
         <div class="row justify-content-center">
             <div v-for="post in posts" class="col-md-3 m-3">
                 <div class="border border-info card h-100">
-                    <img :src="'/storage/capas/' + (post.capa ? post.capa : 'default.jpg')" class="card-img-top h-100" alt="Capa do Post">
+                    <img :src="post.cover ? ('/storage/covers/' + post.cover) : '/images/cover-default.jpg'" class="card-img-top h-100" alt="Capa do Post">
                     <div class="card-body">
                         <h6 class="text-center">{{post.title}}</h6>
                     </div>
                     <div class="card-footer text-center">
-                        <a class="btn btn-success col-12" v-bind:href="'post/id=' + post.id">Acessar post</a>
+                        <router-link class="btn btn-success col-12" :to="{path: '/post/view/' + post.id}">Acessar post</router-link>
                     </div>
                 </div>
             </div>
@@ -27,6 +27,7 @@
 
 <script>
     export default {
+        props: ['tag'],
         data() {
             return {
                 posts: [],
@@ -37,7 +38,7 @@
         },
         methods: {
             getPosts(page = 1) {
-                axios.get('/api/posts?page=' + page).then(response => {
+                axios.get('/api/posts/' + ( this.tag || '')  + '?page=' + page).then(response => {
                     this.posts = response.data.data;
                     this.setPages(response.data.total);
                     this.currentPage = response.data.current_page;
@@ -56,7 +57,3 @@
         }
     }
 </script>
-
-<style>
-    
-</style>

@@ -58,7 +58,8 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <div id="app-vue">
+            <div id="app">
+                <router-view></router-view>
             </div>
         </div>
     </div>

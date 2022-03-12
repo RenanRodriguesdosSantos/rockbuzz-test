@@ -1,23 +1,21 @@
 <template>
-    <div class="row justify-content-center">
-        <div class="col-md-8 shadow-lg p-3 mb-5 bg-body rounded">
-            <div class="row justify-content-center">
-                <h1 class="text-center mb-3 fs-1">{{post.title}}</h1>
+    <div class="row justify-content-center ">
+        <div class="col-md-8 px-3 shadow-lg mb-5 bg-light rounded">
+            <div class="row p-3" id="card-title">
+                <h1 class="col-12 text-center">{{post.title}}</h1>
+                 <h4 class="col-12 text-right">Author: {{ post.author? post.author.name : ''}}</h4>
             </div>
-            <div class="row justify-content-center">
-                <img class="col-md-10" v-if="post.capa" :src="'/storage/capas/' + post.capa" />
+            <div class="row justify-content-center bg-body-post p-md-3">
+                <img class="col-md-10" v-if="post.cover" :src="'/storage/covers/' + post.cover" />
             </div>
-            <div class="row justify-content-end pt-md-5 px-md-5 p-1">
-                 <h3>Autor: {{post.autor}}</h3>
+            <div class="row bg-body-post">
+                <p class="col-12 pt-md-1 p-md-5 p-1" id="body-post" v-html="post.body"></p>
             </div>
-            <div class="row">
-                <p class="col-12 pt-md-1 p-md-5 p-1" v-html="post.body"></p>
-            </div>
-            <div class="row">
-                <p class="col-12 p-md-5 p-1">
-                    <strong>Tags:</strong>
+            <div class="row bg-body-post">
+                <p class="col-12 p-md-5 p-1 text-center">
+                    <strong>Tags</strong>
                         <ul class="tags">
-                            <li v-for="tag in post.tags">{{ tag.name }}</li>
+                            <li v-for="tag in post.tags"> <router-link class="btn btn-info py-0 mx-1" :to="{path: '/posts/view/' + tag.id}"> {{ tag.name }} </router-link></li>
                         </ul>
                 </p>
             </div>
@@ -27,6 +25,7 @@
 
 <script>
     export default {
+        props: ['id'],
         data() {
             return {
                 post: {},
@@ -34,13 +33,11 @@
         },
         methods: {
             getPost() {
-                let currentRoute = window.location.pathname;
-                let id = currentRoute.split("id=")[1];
-                axios.get('/api/post/' + id).then(response => {
+                axios.get('/api/post/' + this.id).then(response => {
                     this.post = response.data;
                 })
                 .catch(response =>{
-                    window.location.href = "/";
+                    window.location.href = "/posts/view";
                 });
 
             }
@@ -51,15 +48,26 @@
     }
 </script>
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Rubik:wght@300&display=swap');
     .tags{
         list-style: none;
-        display: inline;
     }
 
     .tags li{
         display: inline-block;
-        background: #8cc7ff;
-        padding: 0 10px 0 10px;
-        margin: 2px;
     }
+    #card-title{
+        background-color: #83c3ff;
+        font-family: 'Libre+Baskerville';
+        font-weight: bold;
+    }
+    #body-post{
+        font-family: 'Rubik';
+        font-size: 18pt;
+    }
+
+    .bg-body-post{
+        background: #cef5ff;
+    }
+
 </style>

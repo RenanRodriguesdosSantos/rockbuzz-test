@@ -9,7 +9,7 @@
 
                     <div class="card-body justify-content-end">
                         <a class="btn btn-primary m-1" href="{{ url('post/create') }}">Create</a>
-                        <a class="btn btn-secondary m-1" href="{{ url('posts/lixeira') }}">Lixeira</a>
+                        <a class="btn btn-secondary m-1" href="{{ url('posts/trash') }}">Lixeira</a>
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -22,10 +22,10 @@
                             @foreach($posts as $post)
                                 <tr>
                                     <td>{{ $post->title }}</td>
-                                    <td>{{ $post->visualizacoes }}</td>
+                                    <td>{{ $post->views }}</td>
                                     <td>
                                         <a class="btn btn-warning" href="{{ url('post/edit/' . $post->id) }}">Edit</a>
-                                        <a class="btn btn-danger" href="{{ url('post/move-to-lixeira/' . $post->id) }}">To Lixeira</a>
+                                        <a class="btn btn-danger" href="{{ url('post/move-to-trash/' . $post->id) }}">Move to trash</a>
                                     </td>
                                 </tr>
                             @endforeach

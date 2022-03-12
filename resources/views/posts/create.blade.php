@@ -6,7 +6,6 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">Posts Create</div>
-
                     <div class="card-body">
                         <form action="{{ url('post/store') }}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
@@ -20,17 +19,17 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <label for="title" class="text-muted">Capa</label>
-                                <input id="capa" type="file" name="capa" class="form-control" accept="image/*">
-                                @if ($errors->has('capa'))
+                                <label for="title" class="text-muted">Cover</label>
+                                <inputimage id="cover" name="cover"/>
+                                @if ($errors->has('cover'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('capa') }}</strong>
+                                        <strong>{{ $errors->first('cover') }}</strong>
                                     </span>
                                 @endif
                             </div>
                             <div class="form-group has-feedback{{ $errors->has('body') ? ' has-error' : '' }}">
                                 <label for="body" class="text-muted">Body</label>
-                                <textarea id="body" name="body" rows="10" class="form-control"></textarea>
+                                <editor name="body"></editor>
                                 @if ($errors->has('body'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('body') }}</strong>
@@ -39,11 +38,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="tags" class="text-muted">Tags</label>
-                                <select id="tags" type="text" name="tags[]" multiple class="form-control">
-                                    @foreach(\App\Tag::all() as $tag)
-                                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                                    @endforeach
-                                </select>
+                                <custumselect :options="{{\App\Tag::all(['id','name'])}}" ></custumselect>
                                 @if ($errors->has('tags'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('tags') }}</strong>
@@ -51,17 +46,16 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <input id="publicado" type="checkbox" name="publicado">
-                                <label for="publicado" class="text-muted">Publicado</label>
-                                @if ($errors->has('publicado'))
+                                <input id="published" type="checkbox" name="published">
+                                <label for="published" class="text-muted">Published</label>
+                                @if ($errors->has('published'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('publicado') }}</strong>
+                                        <strong>{{ $errors->first('published') }}</strong>
                                     </span>
                                 @endif
                             </div>
                             <button type="submit" class="btn btn-primary">store</button>
                         </form>
-
                     </div>
                 </div>
             </div>

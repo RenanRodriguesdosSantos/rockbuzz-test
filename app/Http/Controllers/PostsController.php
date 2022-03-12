@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Post;
 use Illuminate\Http\Request;
 
 class PostsController extends Controller
@@ -17,11 +18,11 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function listar()
+    public function all()
     {
-        $posts = \App\Post::all();
+        $posts = Post::all();
 
-        return view('posts.index', ['posts' => $posts]);
+        return view('posts.index', compact('posts', $posts));
     }
 
     /**
@@ -29,7 +30,7 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function criar()
+    public function create()
     {
         return view('posts.create');
     }
@@ -40,34 +41,27 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function salvar(Request $request)
+    public function store(Request $request)
     {
         $this->validate($request, [
             'title' => 'required',
             'body' => 'required'
         ]);
 
-        $post = \App\Post::create([
+        $post = Post::create([
             'title' => $request->title,
             'body' => $request->body,
-            'publicado' => $request->publicado ? true: false,
-            'id_autor' => $request->user()->id
+            'published' => $request->published ? true: false,
+            'author_id' => $request->user()->id
         ]);
 
         if($request->tags){
-            foreach ($request->tags as $tag_id) {
-                \DB::table('tag_post')->insert([
-                    'tag_id' => $tag_id,
-                    'post_id' => $post->id,
-                    
-                ]);
-            }
+            $post->tags()->attach(explode(',',$request->tags));
         }
 
-        if ($request->hasFile('capa') && $request->file('capa')->isValid()) {
-
-            if($request->file('capa')->storeAs('capas', "image_post_".$post->id. "." . $request->capa->extension())){
-                $post->capa = "image_post_".$post->id. "." . $request->capa->extension();
+        if ($request->hasFile('cover') && $request->file('cover')->isValid()) {
+            if($request->file('cover')->storeAs('covers', "image_post_".$post->id. "." . $request->cover->extension())){
+                $post->cover = "image_post_".$post->id. "." . $request->cover->extension();
                 $post->save();
             }
         }
@@ -75,56 +69,31 @@ class PostsController extends Controller
         return redirect('posts');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function editar($id)
+    public function unique(Post $post)
     {
-        $post = \App\Post::find($id);
-
-        return view('posts.edit', ['post' => $post]);
+        return view('posts.edit', compact('post', $post));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function atualizar(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
         $this->validate($request, [
             'title' => 'required',
             'body' => 'required'
         ]);
-
-        $post = \App\Post::find($id);
 
         $post->update([
             'title' => $request->title,
             'body' => $request->body,
-            'publicado' => $request->publicado ? true: false,
+            'published' => $request->published ? true: false
         ]);
 
-        \DB::table('tag_post')->where('post_id', '=', $post->id)->delete();
-
         if($request->tags){
-            foreach ($request->tags as $tag_id) {
-                \DB::table('tag_post')->insert([
-                    'tag_id' => $tag_id,
-                    'post_id' => $post->id
-                ]);
-            }
+            $post->tags()->sync(explode(',',$request->tags));
         }
 
-        if ($request->hasFile('capa') && $request->file('capa')->isValid()) {
-
-            if($request->file('capa')->storeAs('capas', "image_post_".$post->id. "." . $request->capa->extension())){
-                $post->capa = "image_post_".$post->id. "." . $request->capa->extension();
+        if ($request->hasFile('cover') && $request->file('cover')->isValid()) {
+            if($request->file('cover')->storeAs('covers', "image_post_".$post->id. "." . $request->cover->extension())){
+                $post->cover = "image_post_".$post->id. "." . $request->cover->extension();
                 $post->save();
             }
         }
@@ -132,39 +101,34 @@ class PostsController extends Controller
         return redirect('posts');
     }
 
-    public function deletar($id)
+    public function destroy($id)
     {
-        $post = \App\Post::onlyTrashed()->find($id);
-
+        $post = Post::onlyTrashed()->find($id);
         $post->forceDelete();
 
-        \DB::table('tag_post')->where('post_id', '=', $post->id)->delete();
-
-        return redirect('posts/lixeira');
+        return redirect('posts/trash');
     }
 
-    public function toLixeira($id)
+    public function moveToTrash(Post $post)
     {
-        $post = \App\Post::find($id);
-
         $post->delete();
 
-        return redirect('posts/lixeira');
+        return redirect('posts/trash');
     }
 
     public function restore($id)
     {
-        $post = \App\Post::onlyTrashed()->find($id);
-
+        $post = Post::onlyTrashed()->find($id);
         $post->restore();
 
         return redirect('posts');
     }
 
-    public function lixeira()
+    public function trash()
     {
-        $posts = \App\Post::onlyTrashed()->get();
-        return view('posts.lixeira', ['posts' => $posts]);
+        $posts = Post::onlyTrashed()->get();
+
+        return view('posts.trash', compact('posts', $posts));
     }
 
 }

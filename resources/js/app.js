@@ -20,31 +20,29 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-// Vue.component('posts', require('./components/Posts.vue').default);
-// Vue.component('post', require('./components/Post.vue').default);
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
- const routes = {
-    '/': Vue.component('posts', require('./components/Posts.vue').default),
-    '/post': Vue.component('post', require('./components/Post.vue').default)
-  }
 
-if(document.getElementById("app-vue")){
-    const app = new Vue({
-        el: '#app-vue',
-        data: {
-            currentRoute: window.location.pathname
-          },
-          computed: {
-            ViewComponent () {
-              return this.currentRoute == '/' ? routes['/'] : routes['/post'];
-            }
-          },
-          render (h) { return h(this.ViewComponent) }
-    });
+
+import VueQuillEditor from 'vue-quill-editor';
+import VueRouter from 'vue-router';
+import router from './router';
+import 'quill/dist/quill.snow.css';
+
+Vue.component('editor', require('./components/Editor.vue').default);
+Vue.component('inputimage', require('./components/InputImage.vue').default);
+Vue.component('custumselect', require('./components/MultiSelect.vue').default);
+
+Vue.use(VueRouter);
+Vue.use(VueQuillEditor);
+
+if(document.getElementById("app")){
+  const app = new Vue({
+      el: '#app',
+      router
+  });
 }
 

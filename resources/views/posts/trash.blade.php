@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">Lixeira </div>
+                    <div class="card-header">Trash </div>
 
                     <div class="card-body justify-content-end">
                         <table class="table table-bordered">
